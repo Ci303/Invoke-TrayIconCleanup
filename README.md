@@ -62,3 +62,4 @@ This is a destructive operation (registry deletion). Keep the backup until you c
 - **No candidates listed:** no unresolved entries were detected.
 - **Not removed:** type must be exactly `REMOVE` (uppercase) to continue.
 - **No visible tray change:** Explorer may need sign-out/sign-in or manual restart.
+
