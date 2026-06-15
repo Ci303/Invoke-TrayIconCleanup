@@ -3,26 +3,26 @@
 ![PowerShell](https://img.shields.io/badge/PowerShell-5.1%2B-5391FE?logo=powershell)
 ![Last Commit](https://img.shields.io/github/last-commit/Ci303/Invoke-TrayIconCleanup?label=last%20commit)
 ![License](https://img.shields.io/github/license/Ci303/Invoke-TrayIconCleanup)
+![Issues](https://img.shields.io/github/issues/Ci303/Invoke-TrayIconCleanup?label=open%20issues)
 
 ## Purpose
 
-`Invoke-TrayIconCleanup.ps1` is an interactive cleanup utility that removes unresolved tray-icon registry entries under the current user profile, after review and explicit confirmation.
+Interactively review and remove unresolved tray-icon entries from the current user notification-area registry settings.
 
 ## What it does
 
-- Reads `HKCU:\Control Panel\NotifyIconSettings`
-- Finds unresolved entries by resolving environment variables and known-folder GUIDs
-- Skips packaged app entries in `\WindowsApps\`
-- Shows a review table of candidate entries
-- Optionally exports `HKCU\Control Panel\NotifyIconSettings` to a timestamped backup `.reg`
-- Deletes only entries confirmed by the user
-- Optionally restarts Explorer to refresh the tray UI
+- Reads `HKCU:\Control Panel\NotifyIconSettings`.
+- Resolves environment variables and known-folder GUID prefixes.
+- Excludes Microsoft Store app entries (`\\WindowsApps\\`) from cleanup.
+- Shows unresolved entries for user review before deletion.
+- Optionally exports a registry backup to desktop.
+- Requires explicit confirmation (`REMOVE`) before deleting entries.
+- Optionally restarts Explorer to refresh the tray.
 
 ## Requirements
 
-- Windows PowerShell 5.1+
-- Registry access to `HKCU:\Control Panel\NotifyIconSettings`
-- Optional: desktop access for backup file creation
+- Windows PowerShell 5.1+.
+- Write access to `HKCU:\Control Panel\NotifyIconSettings`.
 
 ## Usage
 
@@ -31,41 +31,40 @@ cd "C:\Users\noswi\Desktop\Scripts\Invoke-TrayIconCleanup"
 .\Invoke-TrayIconCleanup.ps1
 ```
 
-## Interactive flow
+## What happens during a run
 
-1. Script scans and lists unresolved entries.
-2. Prompts for backup creation.
-3. Shows final removal list.
-4. Requires typing `REMOVE` to proceed.
-5. Optionally restarts Explorer.
+1. Scan unresolved entries.
+2. Prompt for backup creation.
+3. Show candidate entries with registry key/name/path.
+4. Require explicit deletion confirmation.
+5. Optionally restart Explorer.
 
-## Backup and restore
+## Backup
 
-If enabled, backup location is:
+By default, backup is written to your desktop as:
 
 ```text
-%USERPROFILE%\Desktop\NotifyIconSettings-backup-YYYYMMDD-HHMMSS.reg
+NotifyIconSettings-backup-YYYYMMDD-HHMMSS.reg
 ```
 
-Restore manually if needed with:
+Restore with:
 
 ```powershell
-reg import "%USERPROFILE%\Desktop\NotifyIconSettings-backup-YYYYMMDD-HHMMDD.reg"
+reg import "$env:USERPROFILE\\Desktop\\NotifyIconSettings-backup-YYYYMMDD-HHMMSS.reg"
 ```
 
-## Risk note
+## Notes
 
-This is a destructive operation (registry deletion). Keep the backup until you confirm no adverse effects.
+Use on non-critical systems first. Keep the `.reg` backup until cleanup is confirmed.
 
 ## Troubleshooting
 
-- **No candidates listed:** no unresolved entries were detected.
-- **Not removed:** type must be exactly `REMOVE` (uppercase) to continue.
-- **No visible tray change:** Explorer may need sign-out/sign-in or manual restart.
-
+- No candidates shown: no unresolved entries were detected.
+- Deletion is skipped unless you type exactly `REMOVE`.
+- If tray icons do not refresh, sign out/in or restart Explorer manually.
 
 ## Support and contribution
 
 - Issues and feature requests: [GitHub Issues](https://github.com/Ci303/Invoke-TrayIconCleanup/issues)
-- Security reporting: [SECURITY.md](./SECURITY.md)
-- Contributing guide: [CONTRIBUTING.md](./CONTRIBUTING.md)
+- Security concerns: [SECURITY.md](./SECURITY.md)
+- Contribution guidelines: [CONTRIBUTING.md](./CONTRIBUTING.md)
