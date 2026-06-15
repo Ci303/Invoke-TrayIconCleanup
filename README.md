@@ -1,25 +1,28 @@
 # Invoke-TrayIconCleanup.ps1
 
-Interactive script to review and remove unresolved Windows tray icon registry entries from the user hive.
+![PowerShell](https://img.shields.io/badge/PowerShell-5.1%2B-5391FE?logo=powershell)
+![Last Commit](https://img.shields.io/github/last-commit/Ci303/Invoke-TrayIconCleanup?label=last%20commit)
+![License](https://img.shields.io/github/license/Ci303/Invoke-TrayIconCleanup)
 
-## Overview
+## Purpose
 
-The script checks `HKCU:\Control Panel\NotifyIconSettings` for tray icon entries whose executable path cannot be resolved, then prompts before making changes.
+`Invoke-TrayIconCleanup.ps1` is an interactive cleanup utility that removes unresolved tray-icon registry entries under the current user profile, after review and explicit confirmation.
 
-It will:
+## What it does
 
-- Expand environment variables and known-folder GUID references
-- Parse command-line style paths to extract executable paths
-- Skip Microsoft Store packaged entries under `\WindowsApps\`
-- Show a review table of unresolved entries
-- Optionally create a `.reg` backup
-- Remove selected entries only when explicitly confirmed
-- Optionally restart Explorer to refresh tray icons
+- Reads `HKCU:\Control Panel\NotifyIconSettings`
+- Finds unresolved entries by resolving environment variables and known-folder GUIDs
+- Skips packaged app entries in `\WindowsApps\`
+- Shows a review table of candidate entries
+- Optionally exports `HKCU\Control Panel\NotifyIconSettings` to a timestamped backup `.reg`
+- Deletes only entries confirmed by the user
+- Optionally restarts Explorer to refresh the tray UI
 
 ## Requirements
 
-- PowerShell 5.1+
-- User registry access to `HKCU:\Control Panel\NotifyIconSettings`
+- Windows PowerShell 5.1+
+- Registry access to `HKCU:\Control Panel\NotifyIconSettings`
+- Optional: desktop access for backup file creation
 
 ## Usage
 
@@ -30,18 +33,32 @@ cd "C:\Users\noswi\Desktop\Scripts\Invoke-TrayIconCleanup"
 
 ## Interactive flow
 
-1. Detect unresolved entries.
-2. Show a list with registry key, icon name, and resolved path.
-3. Ask whether to create a registry backup.
-4. Ask for explicit confirmation (`REMOVE`) before deleting entries.
-5. Optionally restart Explorer.
+1. Script scans and lists unresolved entries.
+2. Prompts for backup creation.
+3. Shows final removal list.
+4. Requires typing `REMOVE` to proceed.
+5. Optionally restarts Explorer.
 
-## Backup
+## Backup and restore
 
-If enabled, the script exports the target registry key to your Desktop as:
+If enabled, backup location is:
 
-- `NotifyIconSettings-backup-YYYYMMDD-HHMMSS.reg`
+```text
+%USERPROFILE%\Desktop\NotifyIconSettings-backup-YYYYMMDD-HHMMSS.reg
+```
 
-## Destructive action warning
+Restore manually if needed with:
 
-This script removes registry keys. Do not run unattended unless you understand the impact and have a backup available. Use the review output and keep the `.reg` backup until you are happy with the result.
+```powershell
+reg import "%USERPROFILE%\Desktop\NotifyIconSettings-backup-YYYYMMDD-HHMMDD.reg"
+```
+
+## Risk note
+
+This is a destructive operation (registry deletion). Keep the backup until you confirm no adverse effects.
+
+## Troubleshooting
+
+- **No candidates listed:** no unresolved entries were detected.
+- **Not removed:** type must be exactly `REMOVE` (uppercase) to continue.
+- **No visible tray change:** Explorer may need sign-out/sign-in or manual restart.
