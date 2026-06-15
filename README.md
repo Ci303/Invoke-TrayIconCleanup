@@ -13,7 +13,7 @@ Interactively review and remove unresolved tray-icon entries from the current us
 
 - Reads `HKCU:\Control Panel\NotifyIconSettings`.
 - Resolves environment variables and known-folder GUID prefixes.
-- Excludes Microsoft Store app entries (`\\WindowsApps\\`) from cleanup.
+- Excludes `\WindowsApps\` entries from cleanup.
 - Shows unresolved entries for user review before deletion.
 - Optionally exports a registry backup to desktop.
 - Requires explicit confirmation (`REMOVE`) before deleting entries.
@@ -31,37 +31,20 @@ cd "C:\Users\noswi\Desktop\Scripts\Invoke-TrayIconCleanup"
 .\Invoke-TrayIconCleanup.ps1
 ```
 
-## What happens during a run
+## Output
 
-1. Scan unresolved entries.
-2. Prompt for backup creation.
-3. Show candidate entries with registry key/name/path.
-4. Require explicit deletion confirmation.
-5. Optionally restart Explorer.
-
-## Backup
-
-By default, backup is written to your desktop as:
-
-```text
-NotifyIconSettings-backup-YYYYMMDD-HHMMSS.reg
-```
-
-Restore with:
-
-```powershell
-reg import "$env:USERPROFILE\\Desktop\\NotifyIconSettings-backup-YYYYMMDD-HHMMSS.reg"
-```
-
-## Notes
-
-Use on non-critical systems first. Keep the `.reg` backup until cleanup is confirmed.
+- Candidate list with `Key`, `Name`, and `ResolvedPath` before deletion.
+- Backup file path when backup is enabled.
 
 ## Troubleshooting
 
 - No candidates shown: no unresolved entries were detected.
 - Deletion is skipped unless you type exactly `REMOVE`.
 - If tray icons do not refresh, sign out/in or restart Explorer manually.
+
+## Safety
+
+This operation is destructive. Keep the `.reg` backup until you verify results.
 
 ## Support and contribution
 
