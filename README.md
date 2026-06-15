@@ -63,3 +63,9 @@ This is a destructive operation (registry deletion). Keep the backup until you c
 - **Not removed:** type must be exactly `REMOVE` (uppercase) to continue.
 - **No visible tray change:** Explorer may need sign-out/sign-in or manual restart.
 
+
+## Support and contribution
+
+- Issues and feature requests: [GitHub Issues](https://github.com/Ci303/Invoke-TrayIconCleanup/issues)
+- Security reporting: [SECURITY.md](./SECURITY.md)
+- Contributing guide: [CONTRIBUTING.md](./CONTRIBUTING.md)
